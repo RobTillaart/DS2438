@@ -20,17 +20,17 @@ disableCurrentMeasurement	KEYWORD2
 readCurrent	KEYWORD2
 getCurrent	KEYWORD2
 
-writeCurrentOffset
-readCurrentOffset
+writeCurrentOffset	KEYWORD2
+readCurrentOffset	KEYWORD2
 
-writeThreshold
-readThreshold
+writeThreshold	KEYWORD2
+readThreshold	KEYWORD2
 
-writeETM
-readETM
+writeETM	KEYWORD2
+readETM	KEYWORD2
 
-writeEEPROM
-readEEPROM
+writeEEPROM	KEYWORD2
+readEEPROM	KEYWORD2
 
 
 setConfigBit	KEYWORD2
