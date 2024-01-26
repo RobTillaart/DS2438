@@ -13,6 +13,7 @@
 
 Arduino Library for the DS2438 1-wire battery monitor.
 
+
 #### Note
 
 Started with this library, however I could not find these sensors for sale.
