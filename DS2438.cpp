@@ -219,7 +219,7 @@ float DS2438::readRemaining()
 {
   readScratchPad(1);
   //  factor 2 from optimization
-  float remaining = _scratchPad[4] _inverseR * (2 * 0.4882);  //   mVhr
+  float remaining = _scratchPad[4] * _inverseR * (2 * 0.4882);  //   mVhr
   return remaining;
 }
 

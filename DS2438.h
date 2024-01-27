@@ -77,6 +77,7 @@ public:
 
   //  ICA + THRESHOLD
   //  Integrated Current Accumulator.
+  float    readRemaining();
   void     writeThreshold(uint8_t value);
   uint8_t  readThreshold();
 

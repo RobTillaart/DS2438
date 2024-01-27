@@ -215,6 +215,9 @@ This library supports only one DS2438 per Arduino / MCU pin.
 
 only after testing and code works.
 
+- getters,
+  - remove? == user responibility?
+  - renaming: getVDD() vs getLastVDD? et al.
 - unit tests?
   - possible?
 - async interface for both T and V.
@@ -227,7 +230,6 @@ only after testing and code works.
 - error handling.
 - copy snapshot to EEPROM(page)
   - copies page 0 to EEPROM page 0..4
-- renaming: getVDD() vs getLastVDD? et al.
 
 
 #### Wont
