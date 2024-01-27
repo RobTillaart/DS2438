@@ -159,7 +159,7 @@ void DS2438::enableCurrentMeasurement()
   //  if the IAD bit is set to “1” in the status/Configuration Register.
   //  The current A/D measures at a rate of 36.41 times per second, or once every 27.46 ms.
   readScratchPad(0);
-  if ((_scratchPad[0] & 0x01) == 0x01) return;  //  already set
+  if ((_scratchPad[0] & 0x01) == 0x01) return;  //  already 1
   _scratchPad[0] |= 0x01;
   writeScratchPad(0);
 }
@@ -168,8 +168,7 @@ void DS2438::enableCurrentMeasurement()
 void DS2438::disableCurrentMeasurement()
 {
   readScratchPad(0);
-  if ((_scratchPad[0] & 0x01) == 0x00) return;  //  already clear
-  //  clear bit
+  if ((_scratchPad[0] & 0x01) == 0x00) return;  //  already 0
   _scratchPad[0] &= ~0x01;
   writeScratchPad(0);
 }
@@ -311,6 +310,44 @@ uint8_t DS2438::readEEPROM(uint8_t address)
 
   readScratchPad(page);
   return _scratchPad[index];
+}
+
+
+///////////////////////////////////////////////////////////
+//
+//  CONFIG REGISTER
+//
+void DS2438::enableCCA()
+{
+  readScratchPad(0);
+  if ((_scratchPad[0] & 0x02) == 0x02) return;  //  already 1
+  _scratchPad[0] |= 0x02;
+  writeScratchPad(0);
+}
+
+
+void DS2438::disableCCA()
+{
+  readScratchPad(0);
+  if ((_scratchPad[0] & 0x02) != 0x02) return;  //  already 0
+  _scratchPad[0] &= ~0x02;
+  writeScratchPad(0);
+}
+
+
+float DS2438::readCCA()
+{
+  readScratchPad(7);
+  uint16_t raw = (_scratchPad[5] * 256 + _scratchPad[4]);
+  return raw * 15.625;
+}
+
+
+float DS2438::readDCA()
+{
+  readScratchPad(7);
+  uint16_t raw = (_scratchPad[7] * 256 + _scratchPad[6]);
+  return raw * 15.625;
 }
 
 

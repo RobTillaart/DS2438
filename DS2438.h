@@ -100,6 +100,15 @@ public:
   uint8_t  readEEPROM(uint8_t address);
 
 
+  //  CCA / DCA
+  //  Charging Current Accumulator, Discharge Current Accumulator
+  //  unit = mVHr
+  void     enableCCA();
+  void     disableCCA();
+  float    readCCA();
+  float    readDCA();
+
+
   //  CONFIG REGISTER
   void     setConfigBit(uint8_t bit);
   void     clearConfigBit(uint8_t bit);

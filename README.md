@@ -98,8 +98,8 @@ There will be a number of retries to connect, default 3.
 
 #### Current
 
-See datasheet for details.
-units not clear yet.
+See datasheet for details. 
+Choice of the resistor determines the working range / accuracy.
 
 - **void setResistor(float resistor = 0.01)** set the shunt resistor in OHM.
 This allows a sort of tuning/calibration.
@@ -149,10 +149,24 @@ For example, 12:00 A.M., January 1, 1970 could be used as a reference point.
 
 #### EEPROM
 
-Valid addresses are 0..39.
+Valid addresses are 0..35 if CCA/DCA is enabled, 0..39 otherwise.
 
 - **bool writeEEPROM(uint8_t address, uint8_t value)** write a byte to EEPROM address.
 - **uint8_t readEEPROM(uint8_t address)** read the byte from EEPROM address.
+
+
+#### CCA DCA
+
+See datasheet for details.
+
+- CCA = Charging Current Accumulator, 
+- DCA = Discharge Current Accumulator
+
+
+- **void enableCCA()** also enables DCA.
+- **void disableCCA()**
+- **float readCCA()** Does not check if enabled.
+- **float readDCA()** Does not check if enabled.
 
 
 #### Configuration register
@@ -160,8 +174,19 @@ Valid addresses are 0..39.
 See datasheet for details.
 
 - **void setConfigBit(uint8_t bit)**  bit = 0..3
-- **void clearConfigBit(uint8_t bit)**  bit = 0..3
+- **void clearConfigBit(uint8_t bit)** bit = 0..3
 - **uint8_t getConfigRegister()** returns configuration and status bits.
+
+|  bit  |  name  |  def   |  description  |
+|:-----:|:------:|:------:|:--------------|
+|   0   |  IAD   |   1    |  Current A/D Control bit.
+|   1   |   CA   |   1    |  Current Accumulator Configuration bit.
+|   2   |   EE   |   1    |  Current Accumulator Shadow Selector bit.
+|   3   |   AD   |   1    |  Voltage A/D Input Select bit. 1 = VDD,  0 = VAD.
+|   4   |   TB   |   0    |  Temperature Busy Flag.
+|   5   |  NVB   |   0    |  Non Volatile Memory Busy Flag.
+|   6   |  ADB   |   0    |  A/D Converter Busy Flag.
+|   7   |   x    |   x    |  don't care.
 
 
 ## Operation
@@ -201,6 +226,7 @@ only after testing and code works.
 - error handling.
 - copy snapshot to EEPROM(page)
   - copies page 0 to EEPROM page 0..4
+- renaming: getVDD() vs getLastVDD? et al.
 
 
 #### Wont

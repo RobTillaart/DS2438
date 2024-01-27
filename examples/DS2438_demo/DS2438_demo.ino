@@ -57,6 +57,11 @@ void setup()
   Serial.println(bm.readThreshold());
 
 
+  Serial.println("\nCCA/DCA");
+  Serial.println(bm.readCCA());
+  Serial.println(bm.readDCA());
+
+
   Serial.println("\nEEPROM");
   for (int addr = 0; addr < 40; addr++)
   {
@@ -68,6 +73,7 @@ void setup()
     Serial.print(bm.readEEPROM(addr));
   }
   Serial.println();
+
 
   Serial.println("\ndone...");
 }

@@ -36,6 +36,12 @@ readEndOfChargeTime	KEYWORD2
 writeEEPROM	KEYWORD2
 readEEPROM	KEYWORD2
 
+enableCCA	KEYWORD2
+disableCCA	KEYWORD2
+readCCA	KEYWORD2
+readDCA	KEYWORD2
+
+
 setConfigBit	KEYWORD2
 clearConfigBit	KEYWORD2
 getConfigRegister	KEYWORD2

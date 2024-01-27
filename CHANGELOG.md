@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.1.1] - 2024-01-27
-- add **float readVAD()**
-- add **float getVAD()**
+- add **float readVAD()** and **float getVAD()**
 - add **uint32_t readDisconnectTime()**
 - add **uint32_t readEndOfChargeTime()**
+- add **void enableCCA()** and **void disableCCA()**
+- add **float readCCA()** and **float readDCA()**
 - rename some functions
 - update readme.md
 - implement some optimizations
