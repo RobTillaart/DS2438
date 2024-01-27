@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - add **uint32_t readEndOfChargeTime()**
 - add **void enableCCA()** and **void disableCCA()**
 - add **float readCCA()** and **float readDCA()**
+- add **float readRemaining()**
 - rename some functions
 - update readme.md
 - implement some optimizations

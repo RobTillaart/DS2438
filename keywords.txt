@@ -25,6 +25,7 @@ getCurrent	KEYWORD2
 writeCurrentOffset	KEYWORD2
 readCurrentOffset	KEYWORD2
 
+readRemaining	KEYWORD2
 writeThreshold	KEYWORD2
 readThreshold	KEYWORD2
 

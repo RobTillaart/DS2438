@@ -22,7 +22,11 @@
 
 #define DS2438_CONVERSION_DELAY     10
 
-//  TODO bit masks config register 
+//  bits configuration register 
+#define DS2438_CFG_IAD              0
+#define DS2438_CFG_CA               1
+#define DS2438_CFG_EE               2
+#define DS2438_CFG_AD               3
 
 
 DS2438::DS2438(OneWire * ow)
@@ -209,13 +213,24 @@ int DS2438::readCurrentOffset()
 
 ///////////////////////////////////////////////////////////
 //
-//  THRESHOLD
+//  ICA + THRESHOLD
 //
+float DS2438::readRemaining()
+{
+  readScratchPad(1);
+  //  factor 2 from optimization
+  float remaining = _scratchPad[4] _inverseR * (2 * 0.4882);  //   mVhr
+  return remaining;
+}
+
+
 void DS2438::writeThreshold(uint8_t value)
 {
+  clearConfigBit(0);
   readScratchPad(0);
   _scratchPad[7] = value & 0xC0;  //  zero lower 6 bits.
   writeScratchPad(0);
+  setConfigBit(0);
 }
 
 

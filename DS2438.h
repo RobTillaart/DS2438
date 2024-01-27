@@ -75,7 +75,8 @@ public:
   int      readCurrentOffset();
 
 
-  //  THRESHOLD
+  //  ICA + THRESHOLD
+  //  Integrated Current Accumulator.
   void     writeThreshold(uint8_t value);
   uint8_t  readThreshold();
 

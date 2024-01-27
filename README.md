@@ -115,10 +115,13 @@ Stops the background measurement of the current.
 - **int readCurrentOffset()**
 
 
-#### Threshold
+#### ICA 
 
 See datasheet for details.
 
+- ICA = Integrated Current Accumulator.
+
+- **float readRemaining()**
 - **void writeThreshold(uint8_t value)**
 - **uint8_t readThreshold()**
 
@@ -205,10 +208,8 @@ This library supports only one DS2438 per Arduino / MCU pin.
 
 #### Should
 
-- implement Integrated Current Accumulator (ICA).
-- implement Charging Current Accumulator (CCA).
-- implement Discharging Current Accumulator (DCA).
 - implement CRC
+
 
 #### Could
 
