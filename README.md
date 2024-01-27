@@ -159,7 +159,7 @@ Valid addresses are 0..35 if CCA/DCA is enabled, 0..39 otherwise.
 
 See datasheet for details.
 
-- CCA = Charging Current Accumulator, 
+- CCA = Charging Current Accumulator
 - DCA = Discharge Current Accumulator
 
 

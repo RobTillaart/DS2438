@@ -101,7 +101,7 @@ public:
 
 
   //  CCA / DCA
-  //  Charging Current Accumulator, Discharge Current Accumulator
+  //  Charging + Discharge Current Accumulator
   //  unit = mVHr
   void     enableCCA();
   void     disableCCA();

@@ -315,7 +315,7 @@ uint8_t DS2438::readEEPROM(uint8_t address)
 
 ///////////////////////////////////////////////////////////
 //
-//  CONFIG REGISTER
+//  Charging + Discharging Current Accumulator
 //
 void DS2438::enableCCA()
 {
