@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - fix #5, improve demo sketch
 - fix sign extension in **readCurrentOffset()**
 - add DS2438_time_convert.ino
+- fix address bug in read/writeEEPROM()
 - update readme.md
-
 
 ## [0.1.2] - 2026-01-02
 - update GitHub actions

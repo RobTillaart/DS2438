@@ -319,7 +319,7 @@ uint32_t DS2438::readEndOfChargeTime()
 void DS2438::writeEEPROM(uint8_t address, uint8_t value)
 {
   if (address > 39) return;    //  0..39
-  uint8_t page  = address / 8;
+  uint8_t page  = 3 + address / 8;
   uint8_t index = address % 8;
 
   readScratchPad(page);
@@ -332,7 +332,7 @@ void DS2438::writeEEPROM(uint8_t address, uint8_t value)
 uint8_t DS2438::readEEPROM(uint8_t address)
 {
   if (address > 39) return 0;    //  0..39
-  uint8_t page  = address / 8;
+  uint8_t page  = 3 + address / 8;
   uint8_t index = address % 8;
 
   readScratchPad(page);
