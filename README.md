@@ -18,10 +18,11 @@ Arduino Library for the DS2438 1-wire battery monitor.
 
 **Experimental**
 
-The DS2438 is a **very experimental** library for the DS2438 battery management sensor.
+The DS2438 is a experimental library for the DS2438 battery management sensor.
 
-The library is not tested yet as I have no hardware (breakout board).
+The library is not tested by me in detail as I have no hardware (breakout board).
 So for the moment the library is written based upon the datasheet and provided as is.
+That said, the library is working (see e.g. #5) but use it with care.
 
 The device supports the following functionality.
 - voltage measurement
@@ -39,7 +40,7 @@ As always, feedback is welcome.
 
 Need to find a breakout.
 
-See datasheet for details
+See datasheet for details for a measurement schema.
 
 ```
                    DS2438
@@ -64,13 +65,17 @@ See datasheet for details
 |  VDD     |  Power Supply (2.4V to 10.0V)       |  +5V         |
 |  GND     |  Ground                             |  processor   |
 |  NC      |  No connect                         |  -           |
-                                                                |
+
 
 ### Related
 
 - https://github.com/RobTillaart/DS2438
 - https://github.com/RobTillaart/Temperature  (conversions)
 
+
+### Special chars
+
+ALT234 = Ω (Ohm)
 
 ## Interface
 
@@ -113,6 +118,11 @@ Must be called before readCurrent will work.
 Stops the background measurement of the current.
 - **float readCurrent()** read current from device.
 - **float getCurrent()** get last read current.
+
+Datasheet page 6, 
+When writing to the Offset Register, current measurement MUST be disabled.
+Read datasheet for calibration routine.
+
 - **void writeCurrentOffset(int value)** 
 - **int readCurrentOffset()**
 
@@ -210,14 +220,15 @@ This library supports only one DS2438 per Arduino / MCU pin.
 #### Should
 
 - implement CRC
+- renaming: getVDD() vs getLastVDD? et al. (0.2.0)
+
 
 #### Could
 
 only after testing and code works.
 
 - getters,
-  - remove? == user responibility?
-  - renaming: getVDD() vs getLastVDD? et al.
+  - remove? == user responsibility?
 - unit tests?
   - possible?
 - async interface for both T and V.
@@ -228,7 +239,7 @@ only after testing and code works.
 - getAddress() ?
 - debugging
 - error handling.
-- copy snapshot to EEPROM(page)
+- copy snapshot to EEPROM(page) -> datasheet p.8 EE bit.
   - copies page 0 to EEPROM page 0..4
 
 #### Wont

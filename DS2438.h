@@ -2,7 +2,7 @@
 //
 //    FILE: DS2438.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.2
+// VERSION: 0.1.3
 //    DATE: 2023-07-28
 // PURPOSE: Arduino Library for DS2438 battery monitor
 //     URL: https://github.com/RobTillaart/DS2438
@@ -33,7 +33,7 @@
 #include "Arduino.h"
 #include "OneWire.h"
 
-#define DS2438_LIB_VERSION        (F("0.1.2"))
+#define DS2438_LIB_VERSION        (F("0.1.3"))
 
 #define DS2438_INVALID             -999
 
@@ -65,12 +65,14 @@ public:
 
 
   //  CURRENT
-  void     setResistor(float resistor = 0.01);  // in OHM
+  void     setResistor(float resistor = 0.01);  //  in Ohm
   void     enableCurrentMeasurement();
   void     disableCurrentMeasurement();
   //  unit is Ampere
   float    readCurrent();
   float    getCurrent();
+  //  datasheet p.6 
+  //  to write, measurements must be disabled.
   void     writeCurrentOffset(int value);
   int      readCurrentOffset();
 

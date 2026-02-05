@@ -54,7 +54,7 @@ void setup()
   Serial.println(bm.readEndOfChargeTime());
 
 
-  Serial.println("\nThresshold");
+  Serial.println("\nThreshold");
   Serial.println(bm.readThreshold());
 
 
@@ -72,6 +72,7 @@ void setup()
   {
     if (addr % 8 == 0) Serial.println();
     Serial.print(bm.readEEPROM(addr));
+    Serial.print(' ');
   }
   Serial.println();
 

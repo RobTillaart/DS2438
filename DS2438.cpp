@@ -72,6 +72,7 @@ bool DS2438::isConnected(uint8_t retries)
 //
 float DS2438::readTemperature()
 {
+  //  datasheet p.4
   //  requestTemperature()
   _oneWire->reset();
   _oneWire->select(_address);
@@ -100,6 +101,7 @@ float DS2438::getTemperature()
 //
 float DS2438::readVDD()
 {
+  //  datasheet p.4
   setConfigBit(3);
 
   //  requestVoltage
@@ -124,6 +126,7 @@ float DS2438::getVDD()
 
 float DS2438::readVAD()
 {
+  //  datasheet p.4
   clearConfigBit(3);
 
   //  requestVoltage
@@ -180,6 +183,7 @@ void DS2438::disableCurrentMeasurement()
 
 float DS2438::readCurrent()
 {
+  //  datasheet p.5/6
   readScratchPad(0);
   int voltageSense = (int(_scratchPad[6]) * 256 + _scratchPad[5]);
   _current = voltageSense * _inverseR;  //  I = V / (4096 * R)
@@ -195,6 +199,7 @@ float DS2438::getCurrent()
 
 void DS2438::writeCurrentOffset(int value)
 {
+  //  datasheet p.6
   value *= 8;
   readScratchPad(1);
   _scratchPad[6] = value / 8;
@@ -205,8 +210,11 @@ void DS2438::writeCurrentOffset(int value)
 
 int DS2438::readCurrentOffset()
 {
+  //  datasheet p.6
   readScratchPad(1);
   int offset = (int(_scratchPad[6]) * 256 + _scratchPad[5]);
+  //  sign extend offset.
+  if (offset & 0x1000) offset |= 0xE000;
   return offset / 8;
 }
 
@@ -217,15 +225,18 @@ int DS2438::readCurrentOffset()
 //
 float DS2438::readRemaining()
 {
+  //  datasheet p.7
   readScratchPad(1);
-  //  factor 2 from optimization
-  float remaining = _scratchPad[4] * _inverseR * (2 * 0.4882);  //   mVhr
+  //  factor 2.0 from optimization (need to explain this factor)
+  //  Remaining Capacity = ICA / (2048 * RSENS)
+  float remaining = _scratchPad[4] * _inverseR * (2.0 / 2048.0);  //   mAhr
   return remaining;
 }
 
 
 void DS2438::writeThreshold(uint8_t value)
 {
+  //  datasheet p.8
   clearConfigBit(0);
   readScratchPad(0);
   _scratchPad[7] = value & 0xC0;  //  zero lower 6 bits.
@@ -247,6 +258,7 @@ uint8_t DS2438::readThreshold()
 //
 void DS2438::writeElapsedTimeMeter(uint32_t seconds)
 {
+  //  datasheet p.9
   readScratchPad(1);
   _scratchPad[0] = seconds & 0xFF;
   seconds >>= 8;
@@ -334,6 +346,7 @@ uint8_t DS2438::readEEPROM(uint8_t address)
 //
 void DS2438::enableCCA()
 {
+  //  datasheet p.8
   readScratchPad(0);
   if ((_scratchPad[0] & 0x02) == 0x02) return;  //  already 1
   _scratchPad[0] |= 0x02;
@@ -343,6 +356,7 @@ void DS2438::enableCCA()
 
 void DS2438::disableCCA()
 {
+  //  datasheet p.8
   readScratchPad(0);
   if ((_scratchPad[0] & 0x02) != 0x02) return;  //  already 0
   _scratchPad[0] &= ~0x02;
@@ -352,6 +366,7 @@ void DS2438::disableCCA()
 
 float DS2438::readCCA()
 {
+  //  datasheet p.8
   readScratchPad(7);
   uint16_t raw = (_scratchPad[5] * 256 + _scratchPad[4]);
   return raw * 15.625;
@@ -360,6 +375,7 @@ float DS2438::readCCA()
 
 float DS2438::readDCA()
 {
+  //  datasheet p.8
   readScratchPad(7);
   uint16_t raw = (_scratchPad[7] * 256 + _scratchPad[6]);
   return raw * 15.625;
