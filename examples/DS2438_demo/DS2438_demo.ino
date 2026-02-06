@@ -23,7 +23,6 @@ void setup()
   Serial.println(DS2438_LIB_VERSION);
   Serial.println();
 
-
   bm.begin();
   Serial.println(bm.isConnected());
 
@@ -43,6 +42,9 @@ void setup()
   Serial.println("\nCurrent");
   bm.setResistor(0.01);
   bm.enableCurrentMeasurement();
+  delay(10);
+  Serial.print("STATUS: ");
+  Serial.println(bm.getConfigRegister(), HEX);
   delay(30);
   bm.readCurrent();
   Serial.println(bm.getCurrent());
@@ -52,7 +54,6 @@ void setup()
   Serial.println(bm.readElapsedTimeMeter());
   Serial.println(bm.readDisconnectTime());
   Serial.println(bm.readEndOfChargeTime());
-
 
   Serial.println("\nThreshold");
   Serial.println(bm.readThreshold());

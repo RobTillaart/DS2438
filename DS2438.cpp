@@ -1,7 +1,7 @@
 //
 //    FILE: DS2438.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.2
+// VERSION: 0.2.0
 //    DATE: 2023-07-28
 // PURPOSE: Arduino Library for DS2438 battery monitor
 //     URL: https://github.com/RobTillaart/DS2438
@@ -11,22 +11,26 @@
 
 
 //      OneWire commands
-#define DS2438_READ_TEMPERATURE     0x44
-#define DS2438_READ_VOLTAGE         0xB4
+#define DS2438_READ_TEMPERATURE           0x44
+#define DS2438_READ_VOLTAGE               0xB4
 
-#define DS2438_RECALL_SCRATCH       0xB8
-#define DS2438_READ_SCRATCH         0xBE
-#define DS2438_WRITE_SCRATCH        0x4E
-#define DS2438_COPY_SCRATCH         0x48
+#define DS2438_RECALL_SCRATCH             0xB8
+#define DS2438_READ_SCRATCH               0xBE
+#define DS2438_WRITE_SCRATCH              0x4E
+#define DS2438_COPY_SCRATCH               0x48
 
 
-#define DS2438_CONVERSION_DELAY     10
+#define DS2438_CONVERSION_DELAY           10
 
-//  bits configuration register
-#define DS2438_CFG_IAD              0
-#define DS2438_CFG_CA               1
-#define DS2438_CFG_EE               2
-#define DS2438_CFG_AD               3
+
+//  ScratchPad pages
+#define DS2438_PAGE_CORE                  0
+#define DS2438_PAGE_ETM_ICA_OFFSET        1
+#define DS2438_PAGE_DIS_EOC               2
+#define DS2438_PAGE_EEPROM_BASE           3
+#define DS2438_PAGE_CCA_DCA               7
+
+
 
 
 DS2438::DS2438(OneWire * ow)
@@ -102,14 +106,14 @@ float DS2438::getTemperature()
 float DS2438::readVDD()
 {
   //  datasheet p.4
-  setConfigBit(3);
+  setConfigBit(DS2438_CONFIG_AD);  //  AD bit == 1;
 
   //  requestVoltage
   _oneWire->reset();
   _oneWire->select(_address);
   _oneWire->write(DS2438_READ_VOLTAGE, 0);
   delay(DS2438_CONVERSION_DELAY);
-  readScratchPad(0);
+  readScratchPad(DS2438_PAGE_CORE);
 
   //  10 mV resolution
   _vdd = ((_scratchPad[4] & 0x03) * 256 + _scratchPad[3]) * 0.01;
@@ -127,14 +131,14 @@ float DS2438::getVDD()
 float DS2438::readVAD()
 {
   //  datasheet p.4
-  clearConfigBit(3);
+  clearConfigBit(DS2438_CONFIG_AD);  //  AD bit == 0;
 
   //  requestVoltage
   _oneWire->reset();
   _oneWire->select(_address);
   _oneWire->write(DS2438_READ_VOLTAGE, 0);
   delay(DS2438_CONVERSION_DELAY);
-  readScratchPad(0);
+  readScratchPad(DS2438_PAGE_CORE);
 
   //  10 mV resolution
   _vad = ((_scratchPad[4] & 0x03) * 256 + _scratchPad[3]) * 0.01;
@@ -165,26 +169,20 @@ void DS2438::enableCurrentMeasurement()
   //  The DS2438 will only perform current A/D measurements
   //  if the IAD bit is set to “1” in the status/Configuration Register.
   //  The current A/D measures at a rate of 36.41 times per second, or once every 27.46 ms.
-  readScratchPad(0);
-  if ((_scratchPad[0] & 0x01) == 0x01) return;  //  already 1
-  _scratchPad[0] |= 0x01;
-  writeScratchPad(0);
+  setConfigBit(DS2438_CONFIG_IAD);
 }
 
 
 void DS2438::disableCurrentMeasurement()
 {
-  readScratchPad(0);
-  if ((_scratchPad[0] & 0x01) == 0x00) return;  //  already 0
-  _scratchPad[0] &= ~0x01;
-  writeScratchPad(0);
+  clearConfigBit(DS2438_CONFIG_IAD);
 }
 
 
 float DS2438::readCurrent()
 {
   //  datasheet p.5/6
-  readScratchPad(0);
+  readScratchPad(DS2438_PAGE_CORE);
   int voltageSense = (int(_scratchPad[6]) * 256 + _scratchPad[5]);
   _current = voltageSense * _inverseR;  //  I = V / (4096 * R)
   return _current;
@@ -201,17 +199,17 @@ void DS2438::writeCurrentOffset(int value)
 {
   //  datasheet p.6
   value *= 8;
-  readScratchPad(1);
+  readScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
   _scratchPad[6] = value / 8;
   _scratchPad[5] = value % 8;
-  writeScratchPad(1);
+  writeScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
 }
 
 
 int DS2438::readCurrentOffset()
 {
   //  datasheet p.6
-  readScratchPad(1);
+  readScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
   int offset = (int(_scratchPad[6]) * 256 + _scratchPad[5]);
   //  sign extend offset.
   if (offset & 0x1000) offset |= 0xE000;
@@ -226,7 +224,7 @@ int DS2438::readCurrentOffset()
 float DS2438::readRemaining()
 {
   //  datasheet p.7
-  readScratchPad(1);
+  readScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
   //  factor 2.0 from optimization (need to explain this factor)
   //  Remaining Capacity = ICA / (2048 * RSENS)
   float remaining = _scratchPad[4] * _inverseR * (2.0 / 2048.0);  //   mAhr
@@ -237,17 +235,17 @@ float DS2438::readRemaining()
 void DS2438::writeThreshold(uint8_t value)
 {
   //  datasheet p.8
-  clearConfigBit(0);
-  readScratchPad(0);
+  clearConfigBit(DS2438_CONFIG_IAD);
+  readScratchPad(DS2438_PAGE_CORE);
   _scratchPad[7] = value & 0xC0;  //  zero lower 6 bits.
-  writeScratchPad(0);
-  setConfigBit(0);
+  writeScratchPad(DS2438_PAGE_CORE);
+  setConfigBit(DS2438_CONFIG_IAD);
 }
 
 
 uint8_t DS2438::readThreshold()
 {
-  readScratchPad(0);
+  readScratchPad(DS2438_PAGE_CORE);
   return _scratchPad[7];
 }
 
@@ -259,7 +257,7 @@ uint8_t DS2438::readThreshold()
 void DS2438::writeElapsedTimeMeter(uint32_t seconds)
 {
   //  datasheet p.9
-  readScratchPad(1);
+  readScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
   _scratchPad[0] = seconds & 0xFF;
   seconds >>= 8;
   _scratchPad[1] = seconds & 0xFF;
@@ -267,13 +265,13 @@ void DS2438::writeElapsedTimeMeter(uint32_t seconds)
   _scratchPad[2] = seconds & 0xFF;
   seconds >>= 8;
   _scratchPad[3] = seconds & 0xFF;
-  writeScratchPad(1);
+  writeScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
 }
 
 
 uint32_t DS2438::readElapsedTimeMeter()
 {
-  readScratchPad(1);
+  readScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
   uint32_t seconds = _scratchPad[3];
   seconds <<= 8;
   seconds += _scratchPad[2];
@@ -286,7 +284,7 @@ uint32_t DS2438::readElapsedTimeMeter()
 
 uint32_t DS2438::readDisconnectTime()
 {
-  readScratchPad(2);
+  readScratchPad(DS2438_PAGE_DIS_EOC);
   uint32_t seconds = _scratchPad[3];
   seconds <<= 8;
   seconds += _scratchPad[2];
@@ -300,7 +298,7 @@ uint32_t DS2438::readDisconnectTime()
 
 uint32_t DS2438::readEndOfChargeTime()
 {
-  readScratchPad(2);
+  readScratchPad(DS2438_PAGE_DIS_EOC);
   uint32_t seconds = _scratchPad[7];
   seconds <<= 8;
   seconds += _scratchPad[6];
@@ -319,23 +317,23 @@ uint32_t DS2438::readEndOfChargeTime()
 void DS2438::writeEEPROM(uint8_t address, uint8_t value)
 {
   if (address > 39) return;    //  0..39
-  uint8_t page  = 3 + address / 8;
+  uint8_t page  = address / 8;
   uint8_t index = address % 8;
 
-  readScratchPad(page);
+  readScratchPad(DS2438_PAGE_EEPROM_BASE + page);
   if (_scratchPad[index] == value) return;  //  no need to write.
   _scratchPad[index] = value;
-  writeScratchPad(page);
+  writeScratchPad(DS2438_PAGE_EEPROM_BASE + page);
 }
 
 
 uint8_t DS2438::readEEPROM(uint8_t address)
 {
   if (address > 39) return 0;    //  0..39
-  uint8_t page  = 3 + address / 8;
+  uint8_t page  = address / 8;
   uint8_t index = address % 8;
 
-  readScratchPad(page);
+  readScratchPad(DS2438_PAGE_EEPROM_BASE + page);
   return _scratchPad[index];
 }
 
@@ -346,37 +344,40 @@ uint8_t DS2438::readEEPROM(uint8_t address)
 //
 void DS2438::enableCCA()
 {
-  //  datasheet p.8
-  readScratchPad(0);
-  if ((_scratchPad[0] & 0x02) == 0x02) return;  //  already 1
-  _scratchPad[0] |= 0x02;
-  writeScratchPad(0);
+  //  datasheet p.8 + 16
+  setConfigBit(DS2438_CONFIG_CA);
 }
-
 
 void DS2438::disableCCA()
 {
-  //  datasheet p.8
-  readScratchPad(0);
-  if ((_scratchPad[0] & 0x02) != 0x02) return;  //  already 0
-  _scratchPad[0] &= ~0x02;
-  writeScratchPad(0);
+  //  datasheet p.8 + 16
+  clearConfigBit(DS2438_CONFIG_CA);
 }
 
+void DS2438::enableCCAShadow()
+{
+  //  datasheet p.8 + 16
+  setConfigBit(DS2438_CONFIG_EE);
+}
+
+void DS2438::disableCCAShadow()
+{
+  //  datasheet p.8 + 16
+  clearConfigBit(DS2438_CONFIG_EE);
+}
 
 float DS2438::readCCA()
 {
-  //  datasheet p.8
-  readScratchPad(7);
+  //  datasheet p.8 + 16
+  readScratchPad(DS2438_PAGE_CCA_DCA);
   uint16_t raw = (_scratchPad[5] * 256 + _scratchPad[4]);
   return raw * 15.625;
 }
 
-
 float DS2438::readDCA()
 {
-  //  datasheet p.8
-  readScratchPad(7);
+  //  datasheet p.8 + 16
+  readScratchPad(DS2438_PAGE_CCA_DCA);
   uint16_t raw = (_scratchPad[7] * 256 + _scratchPad[6]);
   return raw * 15.625;
 }
@@ -385,32 +386,54 @@ float DS2438::readDCA()
 ///////////////////////////////////////////////////////////
 //
 //  CONFIG REGISTER
+//  datasheet Page 15
 //
 void DS2438::setConfigBit(uint8_t bit)
 {
+  if (bit > 3) return;
   uint8_t mask = (0x01 << bit);
-  readScratchPad(0);
+  readScratchPad(DS2438_PAGE_CORE);
   if ((_scratchPad[0] & mask) == mask) return;  //  already 1
   _scratchPad[0] |= mask;
-  writeScratchPad(0);
+  writeScratchPad(DS2438_PAGE_CORE);
 }
-
 
 void DS2438::clearConfigBit(uint8_t bit)
 {
+  if (bit > 3) return;
   uint8_t mask = (0x01 << bit);
-  readScratchPad(0);
+  readScratchPad(DS2438_PAGE_CORE);
   if ((_scratchPad[0] & mask) == 0x00) return;  //  already 0
   _scratchPad[0] &= ~mask;
-  writeScratchPad(0);
+  writeScratchPad(DS2438_PAGE_CORE);
 }
-
 
 uint8_t DS2438::getConfigRegister()
 {
   readScratchPad(0);
   return _scratchPad[0];
 }
+
+bool DS2438::busy()
+{
+  return (getConfigRegister() & 0x70) > 0;
+}
+
+bool DS2438::busyTemperature()
+{
+  return (getConfigRegister() & 0x10) > 0;
+}
+
+bool DS2438::busyNVRAM()
+{
+  return (getConfigRegister() & 0x20) > 0;
+}
+
+bool DS2438::busyADC()
+{
+  return (getConfigRegister() & 0x40) > 0;
+}
+
 
 
 ///////////////////////////////////////////////////////////

@@ -2,7 +2,7 @@
 //
 //    FILE: DS2438.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.3
+// VERSION: 0.2.0
 //    DATE: 2023-07-28
 // PURPOSE: Arduino Library for DS2438 battery monitor
 //     URL: https://github.com/RobTillaart/DS2438
@@ -33,9 +33,16 @@
 #include "Arduino.h"
 #include "OneWire.h"
 
-#define DS2438_LIB_VERSION        (F("0.1.3"))
+#define DS2438_LIB_VERSION        (F("0.2.0"))
 
 #define DS2438_INVALID             -999
+
+
+//  bits configuration register (do not change)
+const uint8_t DS2438_CONFIG_IAD = 0;
+const uint8_t DS2438_CONFIG_CA  = 1;
+const uint8_t DS2438_CONFIG_EE  = 2;
+const uint8_t DS2438_CONFIG_AD  = 3;
 
 
 typedef uint8_t DeviceAddress[8];
@@ -59,9 +66,9 @@ public:
   //  VOLTAGE
   //  unit is Volts
   float    readVDD();
-  float    getVDD();
+  float    getVDD();  //  from cache
   float    readVAD();
-  float    getVAD();
+  float    getVAD();  //  from cache
 
 
   //  CURRENT
@@ -70,8 +77,8 @@ public:
   void     disableCurrentMeasurement();
   //  unit is Ampere
   float    readCurrent();
-  float    getCurrent();
-  //  datasheet p.6 
+  float    getCurrent();  //  from cache
+  //  datasheet p.6
   //  to write, measurements must be disabled.
   void     writeCurrentOffset(int value);
   int      readCurrentOffset();
@@ -109,6 +116,11 @@ public:
   //  unit = mVHr
   void     enableCCA();
   void     disableCCA();
+
+  //  enable shadow CCA / DCA
+  void     enableCCAShadow();
+  void     disableCCAShadow();
+  //  read works only if shadow to EEPROM is enabled.
   float    readCCA();
   float    readDCA();
 
@@ -117,6 +129,11 @@ public:
   void     setConfigBit(uint8_t bit);
   void     clearConfigBit(uint8_t bit);
   uint8_t  getConfigRegister();
+  //  STATUS
+  bool     busy();
+  bool     busyTemperature();
+  bool     busyNVRAM();
+  bool     busyADC();
 
 
 private:
