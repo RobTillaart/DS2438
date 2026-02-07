@@ -3,6 +3,7 @@
 //  AUTHOR: Rob Tillaart
 // PURPOSE: demo DS2438 library time registers conversion
 //     URL: https://github.com/RobTillaart/DS2438
+//     URL: https://github.com/RobTillaart/dateTimeHelpers
 
 
 #include "DS2438.h"
@@ -12,6 +13,8 @@
 
 OneWire   oneWire(ONE_WIRE_BUS);
 DS2438    bm(&oneWire);
+
+uint32_t lastPrint = 0;
 
 
 void setup()
@@ -29,16 +32,21 @@ void setup()
   Serial.println(bm.isConnected());
 
   dumpTimes();
-  bm.writeElapsedTimeMeter(0);  //  try to reset
-  dumpTimes();
-
-  Serial.println("\ndone...");
+  bm.writeElapsedTimeMeter(0);  //  reset to zero.
 }
 
 
 void loop()
 {
+  //  print the time parameters every 10 seconds.
+  if (millis() - lastPrint >= 10000)
+  {
+    lastPrint = millis();
+    dumpTimes();
+  }
+
 }
+
 
 void dumpTimes()
 {
