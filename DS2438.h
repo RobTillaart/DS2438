@@ -126,6 +126,7 @@ public:
   //  experimental
   void     resetAccumulators();  //  blocks 10 ms
 
+
   //  CONFIG REGISTER
   void     setConfigBit(uint8_t bit);
   void     clearConfigBit(uint8_t bit);
