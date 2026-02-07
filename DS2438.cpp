@@ -382,6 +382,32 @@ float DS2438::readDCA()
   return raw * 15.625;
 }
 
+/*
+Steps to Reset CCA/DCA
+Stop Accumulation: Ensure the current accumulator is disabled or the current is not actively being measured to prevent immediate re-accumulation. The CCA and DCA are disabled when the IAD bit (Current A/D Control) or CA bit (Current Accumulator) in the Status/Configuration Register (Page 00h, Address 00h) is set to 0.
+Write Zeroes: Write 0x00 to the specific byte locations for the accumulators in Page 07h.
+CCA (Charging): Addresses 04h and 05h (Page 07h).
+DCA (Discharging): Addresses 06h and 07h (Page 07h).
+EEPROM Timing: The DS2438 requires time to commit these changes to EEPROM. Ensure proper wait times (approx. 10ms) after writing to EEPROM to ensure the data is locked in.
+Key Considerations
+Shadow Mode: If the EE bit (page 00h) is set to 1, the CCA/DCA values are shadowed in EEPROM. Resetting requires modifying these EEPROM locations.
+Evaluation Software: If using the DS2438EVKIT+ software, you can reset these values via the "Set Accumulators" window by setting the values to zero and pressing "Apply".
+Verification: After writing 0x00, read the registers back to confirm they are cleared.
+If you are using a microcontroller (e.g., Arduino), use the 1-Wire protocol to write directly to Page 07h.
+*/
+
+void resetAccumulators()
+{
+  disableCCA();
+  readScratchPad(0x07);
+  _scratchPad[4] = 0;
+  _scratchPad[5] = 0;
+  _scratchPad[6] = 0;
+  _scratchPad[7] = 0;
+  writeScratchPad(0x07);
+  delay(10);
+  enableCCA();
+}
 
 ///////////////////////////////////////////////////////////
 //

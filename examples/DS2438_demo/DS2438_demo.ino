@@ -60,8 +60,12 @@ void setup()
 
 
   Serial.println("\nCCA/DCA");
+  Serial.println("  Charge: ");
   Serial.println(bm.readCCA());
+  Serial.println("Discharge: ");
   Serial.println(bm.readDCA());
+  Serial.println("    Delta: ");
+  Serial.println(bm.readCCA() - bm.readDCA());
 
 
   Serial.println("\nEEPROM");

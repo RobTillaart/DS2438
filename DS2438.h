@@ -114,7 +114,7 @@ public:
   //  CCA / DCA
   //  Charging + Discharge Current Accumulator
   //  unit = mVHr
-  void     enableCCA();
+  void     enableCCA();  //  enables both CCA and DCA
   void     disableCCA();
 
   //  enable shadow CCA / DCA
@@ -123,7 +123,8 @@ public:
   //  read works only if shadow to EEPROM is enabled.
   float    readCCA();
   float    readDCA();
-
+  //  experimental
+  void     resetAccumulators();  //  blocks 10 ms
 
   //  CONFIG REGISTER
   void     setConfigBit(uint8_t bit);
