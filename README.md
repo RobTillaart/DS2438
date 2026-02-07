@@ -175,7 +175,7 @@ For example, 12:00 A.M., January 1, 1970 could be used as a reference point.
 
 ### EEPROM
 
-Valid addresses are 0..35 if CCA/DCA is enabled, 0..39 otherwise.
+Valid addresses are 0..31 if CCA/DCA is enabled, 0..39 otherwise.
 
 - **bool writeEEPROM(uint8_t address, uint8_t value)** write a byte to EEPROM address.
 - **uint8_t readEEPROM(uint8_t address)** read the byte from EEPROM address.
@@ -188,12 +188,14 @@ See datasheet page 8 + 16 for details.
 - CCA = Charging Current Accumulator
 - DCA = Discharge Current Accumulator
 
+The delta CCA - DCA should be actual load. 
+
 - **void enableCCA()** also enables DCA.
 - **void disableCCA()**
 
 To enable shadowing in EEPROM
-- **void enableCCAShadow();
-- **void disableCCAShadow()
+- **void enableCCAShadow()** => EEPROM reduced to address 0..31
+- **void disableCCAShadow()**
 - **float readCCA()** Does not check if enabled.
 - **float readDCA()** Does not check if enabled.
 
