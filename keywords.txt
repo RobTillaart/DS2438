@@ -39,13 +39,21 @@ readEEPROM	KEYWORD2
 
 enableCCA	KEYWORD2
 disableCCA	KEYWORD2
+enableCCAShadow	KEYWORD2
+disableCCAShadow	KEYWORD2
+resetAccumulators	KEYWORD2
+
 readCCA	KEYWORD2
 readDCA	KEYWORD2
-
 
 setConfigBit	KEYWORD2
 clearConfigBit	KEYWORD2
 getConfigRegister	KEYWORD2
+
+busy	KEYWORD2
+busyTemperature	KEYWORD2
+busyNVRAM	KEYWORD2
+busyADC	KEYWORD2
 
 
 # Constants (LITERAL1)

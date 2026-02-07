@@ -245,12 +245,15 @@ This library supports only one DS2438 per Arduino / MCU pin.
 #### Should
 
 - implement CRC
-- renaming: getVDD() vs getLastVDD? et al.
 
 #### Could
 
 only after testing and code works.
 
+- resetAccumulators() add parameters?
+  - void setCCA(float CCA);
+  - void setDCA(float DCA);  15.625 factor
+- renaming: getVDD() vs getLastVDD? et al.
 - getters,
   - remove? == user responsibility?
 - unit tests?
