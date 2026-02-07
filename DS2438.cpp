@@ -396,7 +396,7 @@ Verification: After writing 0x00, read the registers back to confirm they are cl
 If you are using a microcontroller (e.g., Arduino), use the 1-Wire protocol to write directly to Page 07h.
 */
 
-void resetAccumulators()
+void DS2438::resetAccumulators()
 {
   disableCCA();
   readScratchPad(0x07);
