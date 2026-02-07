@@ -118,6 +118,8 @@ float DS2438::readVDD()
   //  10 mV resolution
   _vdd = ((_scratchPad[4] & 0x03) * 256 + _scratchPad[3]) * 0.01;
 
+  //  convert current in same call?!
+
   return _vdd;
 }
 
@@ -142,6 +144,8 @@ float DS2438::readVAD()
 
   //  10 mV resolution
   _vad = ((_scratchPad[4] & 0x03) * 256 + _scratchPad[3]) * 0.01;
+  
+  //  convert current in same call?!
 
   return _vad;
 }
@@ -168,7 +172,8 @@ void DS2438::enableCurrentMeasurement()
 {
   //  The DS2438 will only perform current A/D measurements
   //  if the IAD bit is set to “1” in the status/Configuration Register.
-  //  The current A/D measures at a rate of 36.41 times per second, or once every 27.46 ms.
+  //  The current A/D measures at a rate of 36.41 times per second, 
+  //  or once every 27.46 ms.
   setConfigBit(DS2438_CONFIG_IAD);
 }
 
@@ -385,7 +390,7 @@ float DS2438::readDCA()
 
 void DS2438::resetAccumulators()
 {
-  disableCCA();
+  clearConfigBit(DS2438_CONFIG_IAD);
   readScratchPad(0x07);
   _scratchPad[4] = 0;
   _scratchPad[5] = 0;
@@ -393,7 +398,7 @@ void DS2438::resetAccumulators()
   _scratchPad[7] = 0;
   writeScratchPad(0x07);
   delay(10);
-  enableCCA();
+  setConfigBit(DS2438_CONFIG_IAD);
 }
 
 ///////////////////////////////////////////////////////////

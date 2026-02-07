@@ -256,6 +256,7 @@ only after testing and code works.
 - unit tests?
   - possible?
 - async interface for both T and V.
+  - performance gain ?!
 - optimize the code.
   - cache registers?
 - improve magic masks and numbers
