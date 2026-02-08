@@ -103,6 +103,18 @@ float DS2438::getTemperature()
 //
 //  VOLTAGE
 //
+void DS2438::enableVoltageSelector()
+{
+  //  datasheet p.8 + 16
+  setConfigBit(DS2438_CONFIG_AD);
+}
+
+void DS2438::disableVoltageSelector()
+{
+  //  datasheet p.8 + 16
+  clearConfigBit(DS2438_CONFIG_AD);
+}
+
 float DS2438::readVDD()
 {
   //  datasheet p.4
@@ -123,12 +135,10 @@ float DS2438::readVDD()
   return _vdd;
 }
 
-
 float DS2438::getVDD()
 {
   return _vdd;
 }
-
 
 float DS2438::readVAD()
 {
@@ -149,7 +159,6 @@ float DS2438::readVAD()
 
   return _vad;
 }
-
 
 float DS2438::getVAD()
 {

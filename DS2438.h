@@ -64,6 +64,10 @@ public:
 
 
   //  VOLTAGE
+  //  enable the AD voltage selector, 
+  //  read pin 4 as the selected voltage or read VDD as voltage
+  void    enableVoltageSelector();
+  void    disableVoltageSelector();
   //  unit is Volts
   float    readVDD();
   float    getVDD();  //  from cache
