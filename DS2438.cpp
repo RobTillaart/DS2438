@@ -218,8 +218,8 @@ void DS2438::writeCurrentOffset(int value)
   clearConfigBit(DS2438_CONFIG_IAD);
   readScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
   //  split in HIGH and LOW byte
-  _scratchPad[6] = value / 256;
-  _scratchPad[5] = value % 256;
+  _scratchPad[6] = value >> 8;
+  _scratchPad[5] = value & 0xFF;
   writeScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
   setConfigBit(DS2438_CONFIG_IAD);
 }
