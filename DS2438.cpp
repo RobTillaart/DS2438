@@ -212,17 +212,23 @@ float DS2438::getCurrent()
 void DS2438::writeCurrentOffset(int value)
 {
   //  datasheet p.6
+  //  to write, measurements must be disabled.
+  //  add three zero's
   value *= 8;
+  clearConfigBit(DS2438_CONFIG_IAD);
   readScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
-  _scratchPad[6] = value / 8;
-  _scratchPad[5] = value % 8;
+  //  split in HIGH and LOW byte
+  _scratchPad[6] = value / 256;
+  _scratchPad[5] = value % 256;
   writeScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
+  setConfigBit(DS2438_CONFIG_IAD);
 }
 
 
 int DS2438::readCurrentOffset()
 {
   //  datasheet p.6
+  //  read does not need to disable measurements.
   readScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
   int offset = (int(_scratchPad[6]) * 256 + _scratchPad[5]);
   //  sign extend offset.
