@@ -64,7 +64,7 @@ public:
 
 
   //  VOLTAGE
-  //  enable the AD voltage selector, 
+  //  enable the AD voltage selector,
   //  read pin 4 as the selected voltage or read VDD as voltage
   void    enableVoltageSelector();
   void    disableVoltageSelector();
@@ -153,6 +153,7 @@ private:
   float    _vdd;
   float    _current;
   float    _inverseR;   //  1/(4096*resistor) optimized.
+  float    _RICA;       //  1/(2048*resistor) optimized.
 
   void     readScratchPad(uint8_t page);
   void     writeScratchPad(uint8_t page);

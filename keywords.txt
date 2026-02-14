@@ -11,6 +11,9 @@ isConnected	KEYWORD2
 readTemperature	KEYWORD2
 getTemperature	KEYWORD2
 
+enableVoltageSelector	KEYWORD2
+disableVoltageSelector	KEYWORD2
+
 readVDD	KEYWORD2
 getVDD	KEYWORD2
 readVAD	KEYWORD2

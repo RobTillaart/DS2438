@@ -31,8 +31,6 @@
 #define DS2438_PAGE_CCA_DCA               7
 
 
-
-
 DS2438::DS2438(OneWire * ow)
 {
   _oneWire = ow;
@@ -45,6 +43,7 @@ DS2438::DS2438(OneWire * ow)
   _vdd         = DS2438_INVALID;
   _current     = DS2438_INVALID;
   _inverseR    = DS2438_INVALID;
+  _RICA        = DS2438_INVALID;
 }
 
 
@@ -154,7 +153,7 @@ float DS2438::readVAD()
 
   //  10 mV resolution
   _vad = ((_scratchPad[4] & 0x03) * 256 + _scratchPad[3]) * 0.01;
-  
+
   //  convert current in same call?!
 
   return _vad;
@@ -174,6 +173,7 @@ float DS2438::getVAD()
 void DS2438::setResistor(float resistor)
 {
   _inverseR = 1.0 / (4096.0 * resistor);
+  _RICA     = 1.0 / (2048.0 * resistor);
 }
 
 
@@ -181,7 +181,7 @@ void DS2438::enableCurrentMeasurement()
 {
   //  The DS2438 will only perform current A/D measurements
   //  if the IAD bit is set to “1” in the status/Configuration Register.
-  //  The current A/D measures at a rate of 36.41 times per second, 
+  //  The current A/D measures at a rate of 36.41 times per second,
   //  or once every 27.46 ms.
   setConfigBit(DS2438_CONFIG_IAD);
 }
@@ -247,7 +247,7 @@ float DS2438::readRemaining()
   readScratchPad(DS2438_PAGE_ETM_ICA_OFFSET);
   //  factor 2.0 from optimization (need to explain this factor)
   //  Remaining Capacity = ICA / (2048 * RSENS)
-  float remaining = _scratchPad[4] * _inverseR * (2.0 / 2048.0);  //   mAhr
+  float remaining = _scratchPad[4] / _RICA;  //   mAhr
   return remaining;
 }
 
