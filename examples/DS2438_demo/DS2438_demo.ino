@@ -69,11 +69,12 @@ void setup()
 
 
   Serial.println("\nEEPROM");
-  for (int addr = 0; addr < 40; addr++)
+  Serial.println("Do NOT write the last 4 EEPROM bytes == persistent store of CCA and CDA");
+  for (int addr = 0; addr < 36; addr++)
   {
     bm.writeEEPROM(addr, 100 + addr);
   }
-  for (int addr = 0; addr < 40; addr++)
+  for (int addr = 0; addr < 36; addr++)
   {
     if (addr % 8 == 0) Serial.println();
     Serial.print(bm.readEEPROM(addr));

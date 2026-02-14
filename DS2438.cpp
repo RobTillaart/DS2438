@@ -416,6 +416,7 @@ void DS2438::resetAccumulators()
   setConfigBit(DS2438_CONFIG_IAD);
 }
 
+
 ///////////////////////////////////////////////////////////
 //
 //  CONFIG REGISTER
