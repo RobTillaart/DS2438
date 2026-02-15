@@ -27,6 +27,7 @@ void setup()
   Serial.println(bm.isConnected());
 
 
+  Serial.println("\nBefore resetAccumulators");
   Serial.println("\nCCA/DCA");
   Serial.println("  Charge: ");
   Serial.println(bm.readCCA());
@@ -42,6 +43,25 @@ void setup()
 
   bm.resetAccumulators();
 
+  Serial.println("\nAfter resetAccumulators");
+  Serial.println("\nCCA/DCA");
+  Serial.println("  Charge: ");
+  Serial.println(bm.readCCA());
+  Serial.println("Discharge: ");
+  Serial.println(bm.readDCA());
+  Serial.println("    Delta: ");
+  Serial.println(bm.readCCA() - bm.readDCA());
+
+  Serial.println(bm.readEEPROM(36));
+  Serial.println(bm.readEEPROM(37));
+  Serial.println(bm.readEEPROM(38));
+  Serial.println(bm.readEEPROM(39));
+
+
+  bm.setCCA(15625);
+  bm.setDCA(31250);
+
+  Serial.println("\nAfter setCCA/DCA");
   Serial.println("\nCCA/DCA");
   Serial.println("  Charge: ");
   Serial.println(bm.readCCA());
