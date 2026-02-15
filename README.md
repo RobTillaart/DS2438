@@ -196,6 +196,15 @@ The delta CCA - DCA should be actual load.
 To enable shadowing in EEPROM
 - **void enableCCAShadow()** => EEPROM reduced to address 0..35
 - **void disableCCAShadow()**
+
+Note the setters below block for 10+ milliseconds
+- **bool setCCA(float CCA)** returns true on success, negative values not allowed,
+no upper limit check.
+- **bool setDCA(float DCA)** returns true on success, negative values not allowed,
+no upper limit check.
+- **void resetAccumulators()** sets both CCA and DCA to zero.
+
+Read back the values.
 - **float readCCA()** Does not check if enabled.
 - **float readDCA()** Does not check if enabled.
 
@@ -245,14 +254,11 @@ This library supports only one DS2438 per Arduino / MCU pin.
 #### Should
 
 - implement CRC
+- add device type check
 
 #### Could
 
 only after testing and code works.
-
-- resetAccumulators() add parameters?
-  - void setCCA(float CCA);
-  - void setDCA(float DCA);  15.625 factor
 - renaming: getVDD() vs getLastVDD? et al.
 - getters,
   - remove? == user responsibility?

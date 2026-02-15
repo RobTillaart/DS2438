@@ -402,16 +402,45 @@ float DS2438::readDCA()
   return raw * 15.625;
 }
 
+bool DS2438::setCCA(float CCA)
+{
+  //  note: no upper bound check
+  if (CCA < 0) return false;
+   clearConfigBit(DS2438_CONFIG_IAD);
+  readScratchPad(DS2438_PAGE_CCA_DCA);
+  uint16_t tmp = round(CCA / 15.625);
+  _scratchPad[4] = tmp & 0xFF;
+  _scratchPad[5] = tmp >> 8;
+  writeScratchPad(DS2438_PAGE_CCA_DCA);
+  delay(10);
+  setConfigBit(DS2438_CONFIG_IAD);
+  return true;
+}
+
+bool DS2438::setDCA(float DCA)
+{
+  //  note: no upper bound check
+  if (DCA < 0) return false;
+  clearConfigBit(DS2438_CONFIG_IAD);
+  readScratchPad(DS2438_PAGE_CCA_DCA);
+  uint16_t tmp = round(DCA / 15.625);
+  _scratchPad[6] = tmp & 0xFF;
+  _scratchPad[7] = tmp >> 8;
+  writeScratchPad(DS2438_PAGE_CCA_DCA);
+  delay(10);
+  setConfigBit(DS2438_CONFIG_IAD);
+  return true;
+}
 
 void DS2438::resetAccumulators()
 {
   clearConfigBit(DS2438_CONFIG_IAD);
-  readScratchPad(0x07);
+  readScratchPad(DS2438_PAGE_CCA_DCA);
   _scratchPad[4] = 0;
   _scratchPad[5] = 0;
   _scratchPad[6] = 0;
   _scratchPad[7] = 0;
-  writeScratchPad(0x07);
+  writeScratchPad(DS2438_PAGE_CCA_DCA);
   delay(10);
   setConfigBit(DS2438_CONFIG_IAD);
 }

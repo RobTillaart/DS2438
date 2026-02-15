@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - fix sign extension in **readCurrentOffset()**
 - add DS2438_time_convert.ino
 - add **enableCCAShadow()** + **disableCCAShadow()**
+- add **bool setCCA(float value)** and **bool setDCA(float value)**
 - add getters for status bits e.g **busyADC()**
 - refactor code.
 - update readme.md

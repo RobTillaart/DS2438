@@ -44,8 +44,10 @@ enableCCA	KEYWORD2
 disableCCA	KEYWORD2
 enableCCAShadow	KEYWORD2
 disableCCAShadow	KEYWORD2
-resetAccumulators	KEYWORD2
 
+resetAccumulators	KEYWORD2
+setCCA	KEYWORD2
+setDCA	KEYWORD2
 readCCA	KEYWORD2
 readDCA	KEYWORD2
 

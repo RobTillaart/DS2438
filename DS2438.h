@@ -125,8 +125,10 @@ public:
   void     enableCCAShadow();
   void     disableCCAShadow();
   //  experimental
-  void     resetAccumulators();  //  blocks 10 ms
-  //  read works only if shadow to EEPROM is enabled.
+  bool     setCCA(float CCA);    //  blocks 10+ ms
+  bool     setDCA(float DCA);    //  blocks 10+ ms
+  void     resetAccumulators();  //  blocks 10+ ms
+  //  read works only meaningful if shadow to EEPROM is enabled.
   float    readCCA();
   float    readDCA();
 
