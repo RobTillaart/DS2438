@@ -55,6 +55,7 @@ void setup()
   delay(30);
   bm.readCurrent();
   Serial.println(bm.getCurrent());
+  Serial.println(bm.readCurrentOffset());
 
 
   Serial.println("\nTime");
@@ -64,7 +65,8 @@ void setup()
 
   Serial.println("\nThreshold");
   Serial.println(bm.readThreshold());
-
+  Serial.println("Remaining: ");
+  Serial.println(bm.readRemaining());
 
   Serial.println("\nCCA/DCA");
   Serial.println("  Charge: ");
@@ -73,6 +75,8 @@ void setup()
   Serial.println(bm.readDCA());
   Serial.println("    Delta: ");
   Serial.println(bm.readCCA() - bm.readDCA());
+  Serial.println("Remaining: ");
+  Serial.println(bm.readRemaining());
 
 
   Serial.println("\nEEPROM");
