@@ -1,7 +1,7 @@
 //
 //    FILE: DS2438.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.2.0
+// VERSION: 0.2.1
 //    DATE: 2023-07-28
 // PURPOSE: Arduino Library for DS2438 battery monitor
 //     URL: https://github.com/RobTillaart/DS2438
@@ -68,6 +68,14 @@ bool DS2438::isConnected(uint8_t retries)
   return _addressFound;
 }
 
+bool DS2438::isDS2438()
+{
+  if (_addressFound || isConnected(3))
+  {
+    return (_address[0] == 0x26);
+  }
+  return false;
+}
 
 ///////////////////////////////////////////////////////////
 //

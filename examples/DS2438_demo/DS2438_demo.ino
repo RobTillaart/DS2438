@@ -25,7 +25,14 @@ void setup()
 
   bm.begin();
   Serial.println(bm.isConnected());
-
+  if (!bm.isDS2438())
+  {
+    Serial.print("Pin ");
+    Serial.print(ONE_WIRE_BUS);
+    Serial.println(" has no DS2438 attached.");
+    Serial.println("Check connections and restart.");
+    while(1);
+  }
 
   Serial.println("\nTemperature");
   bm.readTemperature();

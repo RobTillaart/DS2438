@@ -2,7 +2,7 @@
 //
 //    FILE: DS2438.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.2.0
+// VERSION: 0.2.1
 //    DATE: 2023-07-28
 // PURPOSE: Arduino Library for DS2438 battery monitor
 //     URL: https://github.com/RobTillaart/DS2438
@@ -33,7 +33,7 @@
 #include "Arduino.h"
 #include "OneWire.h"
 
-#define DS2438_LIB_VERSION        (F("0.2.0"))
+#define DS2438_LIB_VERSION        (F("0.2.1"))
 
 #define DS2438_INVALID             -999
 
@@ -55,7 +55,7 @@ public:
 
   bool     begin(uint8_t retries = 3);
   bool     isConnected(uint8_t retries = 3);
-
+  bool     isDS2438();
 
   //  TEMPERATURE
   //  unit is degrees Celsius
