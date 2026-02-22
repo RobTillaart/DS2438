@@ -461,7 +461,7 @@ void DS2438::resetAccumulators()
 //
 void DS2438::setConfigBit(uint8_t bit)
 {
-  if (bit > 3) return;
+  if (bit > DS2438_CONFIG_AD) return;
   uint8_t mask = (0x01 << bit);
   readScratchPad(DS2438_PAGE_CORE);
   if ((_scratchPad[0] & mask) == mask) return;  //  already 1
@@ -471,7 +471,7 @@ void DS2438::setConfigBit(uint8_t bit)
 
 void DS2438::clearConfigBit(uint8_t bit)
 {
-  if (bit > 3) return;
+  if (bit > DS2438_CONFIG_AD) return;
   uint8_t mask = (0x01 << bit);
   readScratchPad(DS2438_PAGE_CORE);
   if ((_scratchPad[0] & mask) == 0x00) return;  //  already 0
